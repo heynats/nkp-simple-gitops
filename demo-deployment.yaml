@@ -1,0 +1,60 @@
+---
+# Nginx Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-gitops-demo
+  labels:
+    app: nginx-gitops-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-gitops-demo
+  template:
+    metadata:
+      labels:
+        app: nginx-gitops-demo
+    spec:
+      containers:
+      - name: nginx
+        # ⚠️ Demo 時，你只需要在 Git 上將這個 Tag 從 blue 改成 red
+        image: your-registry/nginx-gitops-demo:blue 
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+---
+# Nginx Service (讓你能連線看結果)
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-gitops-demo-svc
+  labels:
+    app: nginx-gitops-demo
+spec:
+  selector:
+    app: nginx-gitops-demo
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+---
+# 允許從外部開啟 demo frontend
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-gitops-demo-svc-ext
+  labels:
+    app: nginx-gitops-demo
+spec:
+  type: LoadBalancer
+  selector:
+    app: nginx-gitops-demo
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
