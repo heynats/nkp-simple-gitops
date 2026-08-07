@@ -19,7 +19,7 @@ spec:
       containers:
       - name: nginx
         # ⚠️ Demo 時，你只需要在 Git 上將這個 Tag 從 blue 改成 red
-        image: stanleyy/nginx-gitops-demo:blue 
+        image: stanleyy/nginx-gitops-demo:red 
         ports:
         - containerPort: 80
         resources:
